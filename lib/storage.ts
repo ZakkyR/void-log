@@ -46,7 +46,7 @@ export class StorageClient {
     deltaSlides: number;
     itemHashes: string[];
   }): Promise<void> {
-    this.writeQueue = this.writeQueue.then(async () => {
+    const result = this.writeQueue.then(async () => {
       const schema = await this.read();
       if (schema.runtime.todayDate !== input.dateKey) {
         schema.runtime.todayDate = input.dateKey;
@@ -76,43 +76,47 @@ export class StorageClient {
         daily: schema.daily,
         runtime: schema.runtime,
       });
-    }).catch(() => {
+    });
+    this.writeQueue = result.catch(() => {
       // Ensure queue continues even if operation fails
     });
-    return this.writeQueue as Promise<void>;
+    return result;
   }
 
   async updateSettings(patch: Partial<Settings>): Promise<void> {
-    this.writeQueue = this.writeQueue.then(async () => {
+    const result = this.writeQueue.then(async () => {
       const schema = await this.read();
       const settings = { ...schema.settings, ...patch };
       await this.area.set({ schemaVersion: CURRENT_SCHEMA_VERSION, settings });
-    }).catch(() => {
+    });
+    this.writeQueue = result.catch(() => {
       // Ensure queue continues even if operation fails
     });
-    return this.writeQueue as Promise<void>;
+    return result;
   }
 
   async replaceAll(schema: StorageSchema): Promise<void> {
-    this.writeQueue = this.writeQueue.then(async () => {
+    const result = this.writeQueue.then(async () => {
       await this.area.set({
         schemaVersion: schema.schemaVersion,
         settings: schema.settings,
         daily: schema.daily,
         runtime: schema.runtime,
       });
-    }).catch(() => {
+    });
+    this.writeQueue = result.catch(() => {
       // Ensure queue continues even if operation fails
     });
-    return this.writeQueue as Promise<void>;
+    return result;
   }
 
   async clearAll(): Promise<void> {
-    this.writeQueue = this.writeQueue.then(async () => {
+    const result = this.writeQueue.then(async () => {
       await this.area.remove(['schemaVersion', 'settings', 'daily', 'runtime']);
-    }).catch(() => {
+    });
+    this.writeQueue = result.catch(() => {
       // Ensure queue continues even if operation fails
     });
-    return this.writeQueue as Promise<void>;
+    return result;
   }
 }

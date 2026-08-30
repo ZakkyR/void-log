@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { StorageClient, DEFAULT_SETTINGS, type StorageArea } from '@/lib/storage';
 
-function createFakeArea(): StorageArea {
+function createFakeArea(options?: { failSetOnCall?: number }): StorageArea {
   const data: Record<string, unknown> = {};
+  let setCallCount = 0;
   return {
     async get(keys: string[]) {
       const result: Record<string, unknown> = {};
@@ -10,6 +11,10 @@ function createFakeArea(): StorageArea {
       return result;
     },
     async set(items: Record<string, unknown>) {
+      setCallCount++;
+      if (options?.failSetOnCall === setCallCount) {
+        throw new Error('StorageArea.set failed (simulated)');
+      }
       Object.assign(data, items);
     },
     async remove(keys: string[]) {
@@ -124,5 +129,68 @@ describe('StorageClient', () => {
 
     // Settings should be updated
     expect(schema.settings.dayBoundaryHour).toBe(3);
+  });
+
+  it('propagates errors from addMeasurement to the caller', async () => {
+    const failingClient = new StorageClient(createFakeArea({ failSetOnCall: 1 }));
+
+    const addPromise = failingClient.addMeasurement({
+      platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 5, deltaSlides: 1, itemHashes: ['a'],
+    });
+
+    // The promise should reject with the storage error
+    await expect(addPromise).rejects.toThrow('StorageArea.set failed');
+  });
+
+  it('recovers from failed write and continues queue for subsequent calls', async () => {
+    const failingArea = createFakeArea({ failSetOnCall: 1 });
+    const failingClient = new StorageClient(failingArea);
+
+    // First call fails
+    const failPromise = failingClient.addMeasurement({
+      platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 1, deltaSlides: 0, itemHashes: ['a'],
+    });
+    await expect(failPromise).rejects.toThrow();
+
+    // Second call should succeed despite the first failure
+    // (because the queue is not broken by the catch)
+    const successPromise = failingClient.addMeasurement({
+      platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 5, deltaSlides: 1, itemHashes: ['b'],
+    });
+    await expect(successPromise).resolves.toBeUndefined();
+
+    // Verify that the successful measurement was stored
+    const schema = await failingClient.read();
+    expect(schema.daily['2026-08-30'].youtube_shorts).toEqual({
+      seconds: 5,
+      slides: 1,
+      items: 1,
+    });
+  });
+
+  it('propagates errors from updateSettings to the caller', async () => {
+    const failingClient = new StorageClient(createFakeArea({ failSetOnCall: 1 }));
+
+    const updatePromise = failingClient.updateSettings({ dayBoundaryHour: 3 });
+
+    // The promise should reject with the storage error
+    await expect(updatePromise).rejects.toThrow('StorageArea.set failed');
+  });
+
+  it('recovers from failed updateSettings and continues queue', async () => {
+    const failingArea = createFakeArea({ failSetOnCall: 1 });
+    const failingClient = new StorageClient(failingArea);
+
+    // First call fails
+    const failPromise = failingClient.updateSettings({ dayBoundaryHour: 3 });
+    await expect(failPromise).rejects.toThrow();
+
+    // Second call should succeed
+    const successPromise = failingClient.updateSettings({ dayBoundaryHour: 4 });
+    await expect(successPromise).resolves.toBeUndefined();
+
+    // Verify that the setting was updated
+    const schema = await failingClient.read();
+    expect(schema.settings.dayBoundaryHour).toBe(4);
   });
 });
