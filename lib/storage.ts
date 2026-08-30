@@ -25,6 +25,8 @@ function defaultRuntime(): RuntimeState {
 }
 
 export class StorageClient {
+  private writeQueue: Promise<unknown> = Promise.resolve();
+
   constructor(private area: StorageArea) {}
 
   async read(): Promise<StorageSchema> {
@@ -44,53 +46,73 @@ export class StorageClient {
     deltaSlides: number;
     itemHashes: string[];
   }): Promise<void> {
-    const schema = await this.read();
-    if (schema.runtime.todayDate !== input.dateKey) {
-      schema.runtime.todayDate = input.dateKey;
-      schema.runtime.todayItemIds = {};
-    }
-    const seen = new Set(schema.runtime.todayItemIds[input.platform] ?? []);
-    let newItems = 0;
-    for (const hash of input.itemHashes) {
-      if (!seen.has(hash)) {
-        seen.add(hash);
-        newItems += 1;
+    this.writeQueue = this.writeQueue.then(async () => {
+      const schema = await this.read();
+      if (schema.runtime.todayDate !== input.dateKey) {
+        schema.runtime.todayDate = input.dateKey;
+        schema.runtime.todayItemIds = {};
       }
-    }
-    schema.runtime.todayItemIds[input.platform] = Array.from(seen);
+      const seen = new Set(schema.runtime.todayItemIds[input.platform] ?? []);
+      let newItems = 0;
+      for (const hash of input.itemHashes) {
+        if (!seen.has(hash)) {
+          seen.add(hash);
+          newItems += 1;
+        }
+      }
+      schema.runtime.todayItemIds[input.platform] = Array.from(seen);
 
-    const day = schema.daily[input.dateKey] ?? {};
-    const current = day[input.platform] ?? { seconds: 0, slides: 0, items: 0 };
-    day[input.platform] = {
-      seconds: current.seconds + input.deltaSeconds,
-      slides: current.slides + input.deltaSlides,
-      items: current.items + newItems,
-    };
-    schema.daily[input.dateKey] = day;
+      const day = schema.daily[input.dateKey] ?? {};
+      const current = day[input.platform] ?? { seconds: 0, slides: 0, items: 0 };
+      day[input.platform] = {
+        seconds: current.seconds + input.deltaSeconds,
+        slides: current.slides + input.deltaSlides,
+        items: current.items + newItems,
+      };
+      schema.daily[input.dateKey] = day;
 
-    await this.area.set({
-      schemaVersion: CURRENT_SCHEMA_VERSION,
-      daily: schema.daily,
-      runtime: schema.runtime,
+      await this.area.set({
+        schemaVersion: CURRENT_SCHEMA_VERSION,
+        daily: schema.daily,
+        runtime: schema.runtime,
+      });
+    }).catch(() => {
+      // Ensure queue continues even if operation fails
     });
+    return this.writeQueue as Promise<void>;
   }
 
   async updateSettings(patch: Partial<Settings>): Promise<void> {
-    const schema = await this.read();
-    const settings = { ...schema.settings, ...patch };
-    await this.area.set({ schemaVersion: CURRENT_SCHEMA_VERSION, settings });
+    this.writeQueue = this.writeQueue.then(async () => {
+      const schema = await this.read();
+      const settings = { ...schema.settings, ...patch };
+      await this.area.set({ schemaVersion: CURRENT_SCHEMA_VERSION, settings });
+    }).catch(() => {
+      // Ensure queue continues even if operation fails
+    });
+    return this.writeQueue as Promise<void>;
   }
 
   async replaceAll(schema: StorageSchema): Promise<void> {
-    await this.area.set({
-      schemaVersion: schema.schemaVersion,
-      settings: schema.settings,
-      daily: schema.daily,
-      runtime: schema.runtime,
+    this.writeQueue = this.writeQueue.then(async () => {
+      await this.area.set({
+        schemaVersion: schema.schemaVersion,
+        settings: schema.settings,
+        daily: schema.daily,
+        runtime: schema.runtime,
+      });
+    }).catch(() => {
+      // Ensure queue continues even if operation fails
     });
+    return this.writeQueue as Promise<void>;
   }
 
   async clearAll(): Promise<void> {
-    await this.area.remove(['schemaVersion', 'settings', 'daily', 'runtime']);
+    this.writeQueue = this.writeQueue.then(async () => {
+      await this.area.remove(['schemaVersion', 'settings', 'daily', 'runtime']);
+    }).catch(() => {
+      // Ensure queue continues even if operation fails
+    });
+    return this.writeQueue as Promise<void>;
   }
 }

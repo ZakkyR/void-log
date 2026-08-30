@@ -69,4 +69,60 @@ describe('StorageClient', () => {
     expect(schema.daily).toEqual({});
     expect(schema.settings).toEqual(DEFAULT_SETTINGS);
   });
+
+  it('serializes concurrent addMeasurement calls to prevent lost updates', async () => {
+    // Start 5 concurrent calls that each add 1 second and 1 slide
+    const promises = [
+      client.addMeasurement({
+        platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 1, deltaSlides: 1, itemHashes: ['a'],
+      }),
+      client.addMeasurement({
+        platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 1, deltaSlides: 1, itemHashes: ['b'],
+      }),
+      client.addMeasurement({
+        platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 1, deltaSlides: 1, itemHashes: ['c'],
+      }),
+      client.addMeasurement({
+        platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 1, deltaSlides: 1, itemHashes: ['d'],
+      }),
+      client.addMeasurement({
+        platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 1, deltaSlides: 1, itemHashes: ['e'],
+      }),
+    ];
+
+    await Promise.all(promises);
+    const schema = await client.read();
+
+    // All 5 calls should accumulate correctly: 5 seconds, 5 slides, 5 items
+    expect(schema.daily['2026-08-30'].youtube_shorts).toEqual({
+      seconds: 5,
+      slides: 5,
+      items: 5,
+    });
+  });
+
+  it('handles concurrent addMeasurement and updateSettings without conflicts', async () => {
+    const promises = [
+      client.addMeasurement({
+        platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 10, deltaSlides: 2, itemHashes: ['x', 'y'],
+      }),
+      client.updateSettings({ dayBoundaryHour: 3 }),
+      client.addMeasurement({
+        platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 5, deltaSlides: 1, itemHashes: ['z'],
+      }),
+    ];
+
+    await Promise.all(promises);
+    const schema = await client.read();
+
+    // Measurements should accumulate
+    expect(schema.daily['2026-08-30'].youtube_shorts).toEqual({
+      seconds: 15,
+      slides: 3,
+      items: 3,
+    });
+
+    // Settings should be updated
+    expect(schema.settings.dayBoundaryHour).toBe(3);
+  });
 });
