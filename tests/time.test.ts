@@ -19,6 +19,16 @@ describe('toAggregationDate', () => {
     const date = new Date(2026, 7, 30, 2, 0, 0);
     expect(toAggregationDate(date, 4)).toBe('2026-08-29');
   });
+
+  it('rolls back across month boundary', () => {
+    const date = new Date(2026, 8, 1, 2, 0, 0); // 2026-09-01 02:00
+    expect(toAggregationDate(date, 4)).toBe('2026-08-31');
+  });
+
+  it('rolls back across year boundary', () => {
+    const date = new Date(2027, 0, 1, 1, 0, 0); // 2027-01-01 01:00
+    expect(toAggregationDate(date, 4)).toBe('2026-12-31');
+  });
 });
 
 describe('formatDuration', () => {
@@ -58,12 +68,50 @@ describe('getMonthRange', () => {
     expect(range[range.length - 1]).toBe('2026-08-31');
     expect(range).toHaveLength(31);
   });
+
+  it('handles 30-day months correctly', () => {
+    const range = getMonthRange('2026-04-15');
+    expect(range[0]).toBe('2026-04-01');
+    expect(range[range.length - 1]).toBe('2026-04-30');
+    expect(range).toHaveLength(30);
+  });
+
+  it('handles February in a non-leap year (28 days)', () => {
+    const range = getMonthRange('2026-02-10');
+    expect(range[0]).toBe('2026-02-01');
+    expect(range[range.length - 1]).toBe('2026-02-28');
+    expect(range).toHaveLength(28);
+  });
+
+  it('handles February in a leap year (29 days)', () => {
+    const range = getMonthRange('2028-02-10');
+    expect(range[0]).toBe('2028-02-01');
+    expect(range[range.length - 1]).toBe('2028-02-29');
+    expect(range).toHaveLength(29);
+  });
 });
 
 describe('getPeriodDateKeys', () => {
   it('returns all known dates sorted for the total period', () => {
     const keys = getPeriodDateKeys('total', '2026-08-30', 'monday', ['2026-08-05', '2026-08-01']);
     expect(keys).toEqual(['2026-08-01', '2026-08-05']);
+  });
+
+  it('returns only reference date for day period', () => {
+    const keys = getPeriodDateKeys('day', '2026-08-30', 'monday', ['2026-08-05', '2026-08-01']);
+    expect(keys).toEqual(['2026-08-30']);
+  });
+
+  it('returns week range when week period is specified', () => {
+    const keys = getPeriodDateKeys('week', '2026-08-30', 'monday', []);
+    const expectedWeek = getWeekRange('2026-08-30', 'monday');
+    expect(keys).toEqual(expectedWeek);
+  });
+
+  it('returns month range when month period is specified', () => {
+    const keys = getPeriodDateKeys('month', '2026-08-30', 'monday', []);
+    const expectedMonth = getMonthRange('2026-08-30');
+    expect(keys).toEqual(expectedMonth);
   });
 });
 
