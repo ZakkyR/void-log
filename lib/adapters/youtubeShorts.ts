@@ -25,7 +25,7 @@ export const youtubeShortsAdapter: PlatformAdapter = {
   isPlaying() {
     const video =
       document.querySelector<HTMLVideoElement>(YOUTUBE_SHORTS_SELECTORS.videoInActiveReel) ??
-      document.querySelector<HTMLVideoElement>('video');
+      document.querySelector<HTMLVideoElement>(YOUTUBE_SHORTS_SELECTORS.videoFallback);
     if (!video) return false;
     return !video.paused && video.readyState >= 2;
   },
