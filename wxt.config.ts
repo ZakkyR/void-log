@@ -1,6 +1,7 @@
 import { defineConfig } from 'wxt';
 
 export default defineConfig({
+  manifestVersion: 3,
   manifest: {
     name: '虚無ログ',
     description: 'YouTube Shorts の視聴時間・スライド回数を計測し、可視化と手動投稿を行うブラウザ拡張',
