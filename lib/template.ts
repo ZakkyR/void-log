@@ -33,7 +33,7 @@ export function buildTemplateContext(
 export function renderTemplate(template: string, context: TemplateContext): string {
   return template.replace(/\{(\w+)\}/g, (match, key: string) => {
     if (key in context) {
-      return String((context as Record<string, unknown>)[key]);
+      return String((context as unknown as Record<string, unknown>)[key]);
     }
     return match;
   });
