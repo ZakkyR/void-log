@@ -3,7 +3,7 @@
 import { browser } from 'wxt/browser';
 import { StorageClient } from '@/lib/storage';
 import { aggregate } from '@/lib/aggregation';
-import { getPeriodDateKeys, getLast30DateKeys, formatDuration, toAggregationDate, type Period } from '@/lib/time';
+import { getPeriodDateKeys, getLast30DateKeys, formatDuration, formatMonthDay, toAggregationDate, type Period } from '@/lib/time';
 import { buildTemplateContext, renderTemplate, truncateForX } from '@/lib/template';
 import { buildDiscordPayload } from '@/lib/discord';
 import { buildXIntentUrl } from '@/lib/xIntent';
@@ -70,7 +70,14 @@ async function main() {
 
   function currentContext() {
     const period = periodSelect.value as Period;
-    return buildTemplateContext(PERIOD_LABELS[period], metrics[period], metrics.total, formatDuration);
+    return buildTemplateContext(
+      PERIOD_LABELS[period],
+      formatMonthDay(todayKey),
+      metrics[period],
+      metrics.total,
+      formatDuration,
+      schema.settings.displayName,
+    );
   }
 
   document.getElementById('post-x')!.addEventListener('click', () => {
@@ -87,7 +94,6 @@ async function main() {
     }
     const payload = buildDiscordPayload(
       schema.settings.discordFormat,
-      PERIOD_LABELS[periodSelect.value as Period],
       currentContext(),
       schema.settings.templates.discord,
     );

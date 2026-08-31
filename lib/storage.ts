@@ -11,12 +11,13 @@ export const CURRENT_SCHEMA_VERSION = 1;
 export const DEFAULT_SETTINGS: Settings = {
   dayBoundaryHour: 0,
   weekStart: 'monday',
+  displayName: '',
   discordWebhookUrl: '',
   discordFormat: 'embed',
   enabledPlatforms: ['youtube_shorts'],
   templates: {
-    x: '【懺悔】本日のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n累計: {total_duration}\n#ショート懺悔',
-    discord: '【懺悔ログ】{period}\n視聴時間: {duration}\nスライド回数: {slides}回\n視聴本数: {items}本\n累計視聴時間: {total_duration}',
+    x: '{name_line}\n【懺悔】本日 ({date}) のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n累計: {total_duration}\n#ショート懺悔',
+    discord: '{name_line}\n【懺悔】本日 ({date}) のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n視聴本数: {items}本\n累計視聴時間: {total_duration}',
   },
 };
 

@@ -2,12 +2,20 @@ import { describe, it, expect } from 'vitest';
 import {
   toAggregationDate,
   formatDuration,
+  formatMonthDay,
   getWeekRange,
   getMonthRange,
   getPeriodDateKeys,
   getLast30DateKeys,
   getWeekdayLabel,
 } from '@/lib/time';
+
+describe('formatMonthDay', () => {
+  it('formats a date key as M/D without zero padding', () => {
+    expect(formatMonthDay('2026-08-30')).toBe('8/30');
+    expect(formatMonthDay('2026-01-05')).toBe('1/5');
+  });
+});
 
 describe('toAggregationDate', () => {
   it('keeps the same calendar day when the boundary offset is 0', () => {

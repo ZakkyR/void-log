@@ -26,6 +26,8 @@ async function loadForm() {
   boundarySelect.value = String(schema.settings.dayBoundaryHour);
 
   (document.querySelector(`input[name="week-start"][value="${schema.settings.weekStart}"]`) as HTMLInputElement).checked = true;
+
+  (document.getElementById('display-name') as HTMLInputElement).value = schema.settings.displayName;
   (document.querySelector(`input[name="discord-format"][value="${schema.settings.discordFormat}"]`) as HTMLInputElement).checked = true;
 
   const webhookInput = document.getElementById('discord-webhook-url') as HTMLInputElement;
@@ -44,13 +46,14 @@ function bindSave() {
   document.getElementById('save')!.addEventListener('click', async () => {
     const dayBoundaryHour = Number((document.getElementById('day-boundary-hour') as HTMLSelectElement).value);
     const weekStart = (document.querySelector('input[name="week-start"]:checked') as HTMLInputElement).value as 'monday' | 'sunday';
+    const displayName = (document.getElementById('display-name') as HTMLInputElement).value;
     const discordFormat = (document.querySelector('input[name="discord-format"]:checked') as HTMLInputElement).value as 'embed' | 'content';
     const discordWebhookUrl = (document.getElementById('discord-webhook-url') as HTMLInputElement).value;
     const templateX = (document.getElementById('template-x') as HTMLTextAreaElement).value;
     const templateDiscord = (document.getElementById('template-discord') as HTMLTextAreaElement).value;
 
     await storage.updateSettings({
-      dayBoundaryHour, weekStart, discordFormat, discordWebhookUrl,
+      dayBoundaryHour, weekStart, displayName, discordFormat, discordWebhookUrl,
       templates: { x: templateX, discord: templateDiscord },
     });
 

@@ -17,6 +17,11 @@ export function formatDuration(totalSeconds: number): string {
   return result;
 }
 
+export function formatMonthDay(dateKey: string): string {
+  const [, m, d] = dateKey.split('-').map(Number);
+  return `${m}/${d}`;
+}
+
 function parseDateKey(dateKey: string): Date {
   const [y, m, d] = dateKey.split('-').map(Number);
   return new Date(y, m - 1, d);

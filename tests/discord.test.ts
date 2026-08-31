@@ -3,16 +3,18 @@ import { buildDiscordPayload } from '@/lib/discord';
 import type { TemplateContext } from '@/lib/template';
 
 const context: TemplateContext = {
-  period: '2026-08-30', duration: '1時間23分45秒', minutes: 83, slides: 412,
+  period: '2026-08-30', date: '8/30', duration: '1時間23分45秒', minutes: 83, slides: 412,
   items: 268, avgPerItem: 18, total_duration: '10時間0分0秒', breakdown: 'YouTube Shorts',
+  name_line: '私は以下の虚無な時間を過ごしてしまいました。',
 };
 
 describe('buildDiscordPayload', () => {
   it('builds an embed payload with fields for each metric', () => {
-    const payload = buildDiscordPayload('embed', '今日', context, '');
+    const payload = buildDiscordPayload('embed', context, '');
     expect(payload).toEqual({
       embeds: [{
-        title: '懺悔ログ（今日）',
+        title: '【懺悔】本日 (8/30) のショート視聴',
+        description: '私は以下の虚無な時間を過ごしてしまいました。',
         fields: [
           { name: '視聴時間', value: '1時間23分45秒', inline: true },
           { name: 'スライド回数', value: '412回', inline: true },
@@ -24,7 +26,7 @@ describe('buildDiscordPayload', () => {
   });
 
   it('builds a content payload by rendering the template', () => {
-    const payload = buildDiscordPayload('content', '今日', context, '視聴時間: {duration}');
+    const payload = buildDiscordPayload('content', context, '視聴時間: {duration}');
     expect(payload).toEqual({ content: '視聴時間: 1時間23分45秒' });
   });
 });

@@ -4,6 +4,7 @@ import { renderTemplate } from './template';
 export interface DiscordEmbedPayload {
   embeds: Array<{
     title: string;
+    description: string;
     fields: Array<{ name: string; value: string; inline?: boolean }>;
   }>;
 }
@@ -14,7 +15,6 @@ export interface DiscordContentPayload {
 
 export function buildDiscordPayload(
   format: 'embed' | 'content',
-  periodLabel: string,
   context: TemplateContext,
   template: string,
 ): DiscordEmbedPayload | DiscordContentPayload {
@@ -23,7 +23,8 @@ export function buildDiscordPayload(
   }
   return {
     embeds: [{
-      title: `懺悔ログ（${periodLabel}）`,
+      title: `【懺悔】本日 (${context.date}) のショート視聴`,
+      description: context.name_line,
       fields: [
         { name: '視聴時間', value: context.duration, inline: true },
         { name: 'スライド回数', value: `${context.slides}回`, inline: true },

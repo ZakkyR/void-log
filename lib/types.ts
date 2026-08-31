@@ -11,6 +11,7 @@ export type DailyRecord = Partial<Record<PlatformId, PlatformMetrics>>;
 export interface Settings {
   dayBoundaryHour: number;
   weekStart: 'monday' | 'sunday';
+  displayName: string;
   discordWebhookUrl: string;
   discordFormat: 'embed' | 'content';
   enabledPlatforms: PlatformId[];
