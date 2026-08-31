@@ -64,6 +64,14 @@ pnpm typecheck       # tsc --noEmit
 
 ### Firefox
 
+1. [Releases](https://github.com/ZakkyR/void-log/releases) から最新の `void-log-<version>-firefox-signed.xpi` をダウンロード
+2. Firefox でそのファイルを開く（ドラッグ＆ドロップ、または「ファイルを開く」）
+3. 表示される権限確認ダイアログで「追加」を選択
+
+Mozilla Add-ons（AMO）にunlisted（自己配布）として署名済みのため、恒久的にインストールされます。
+
+開発中のビルドを試したい場合は、代わりに以下の手順で一時的に読み込めます（Firefox 再起動で消えます）。
+
 1. `pnpm build:firefox` を実行
 2. `about:debugging#/runtime/this-firefox` を開く
 3. 「一時的なアドオンを読み込む」から `.output/firefox-mv3/manifest.json` を選択
