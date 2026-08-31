@@ -69,6 +69,8 @@ export default defineContentScript({
           flushTimer = null;
         }
         flush();
+      } else if (active && engine) {
+        engine.checkItem();
       }
     }
 

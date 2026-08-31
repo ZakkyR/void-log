@@ -34,7 +34,7 @@ export class MeasurementEngine {
     this.lastNow = null;
   }
 
-  private tick(): void {
+  checkItem(): void {
     const currentId = this.deps.adapter.getCurrentItemId();
     if (currentId !== null && currentId !== this.lastItemId) {
       if (this.hasSeenFirstItem) this.callbacks.onSlide();
@@ -42,6 +42,10 @@ export class MeasurementEngine {
       this.lastItemId = currentId;
       this.callbacks.onItemChange(currentId);
     }
+  }
+
+  private tick(): void {
+    this.checkItem();
 
     const canCount = this.deps.isDocumentVisible() && this.deps.isWindowFocused() && this.deps.adapter.isPlaying();
     const now = this.deps.now();

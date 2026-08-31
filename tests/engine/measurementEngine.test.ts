@@ -76,4 +76,55 @@ describe('MeasurementEngine', () => {
     vi.advanceTimersByTime(5000);
     expect(onSecondsTick).not.toHaveBeenCalled();
   });
+
+  it('checkItem() detects an item change immediately without waiting for tick()/timer', () => {
+    const onSlide = vi.fn();
+    const onItemChange = vi.fn();
+    let currentId = 'item-1';
+    const engine = new MeasurementEngine(
+      { adapter: createFakeAdapter({ getCurrentItemId: () => currentId }), now: () => 0, isDocumentVisible: () => true, isWindowFocused: () => true },
+      { onSecondsTick: vi.fn(), onSlide, onItemChange },
+    );
+    engine.start();
+    onSlide.mockClear();
+    onItemChange.mockClear();
+
+    currentId = 'item-2';
+    engine.checkItem();
+
+    expect(onSlide).toHaveBeenCalledTimes(1);
+    expect(onItemChange).toHaveBeenCalledWith('item-2');
+  });
+
+  it('checkItem() called twice in a row with the same item id does not fire onSlide a second time', () => {
+    const onSlide = vi.fn();
+    let currentId = 'item-1';
+    const engine = new MeasurementEngine(
+      { adapter: createFakeAdapter({ getCurrentItemId: () => currentId }), now: () => 0, isDocumentVisible: () => true, isWindowFocused: () => true },
+      { onSecondsTick: vi.fn(), onSlide, onItemChange: vi.fn() },
+    );
+    engine.start();
+    onSlide.mockClear();
+
+    currentId = 'item-2';
+    engine.checkItem();
+    expect(onSlide).toHaveBeenCalledTimes(1);
+
+    engine.checkItem();
+    expect(onSlide).toHaveBeenCalledTimes(1);
+  });
+
+  it('the very first checkItem() call does not fire onSlide but does fire onItemChange', () => {
+    const onSlide = vi.fn();
+    const onItemChange = vi.fn();
+    const engine = new MeasurementEngine(
+      { adapter: createFakeAdapter(), now: () => 0, isDocumentVisible: () => true, isWindowFocused: () => true },
+      { onSecondsTick: vi.fn(), onSlide, onItemChange },
+    );
+
+    engine.checkItem();
+
+    expect(onSlide).not.toHaveBeenCalled();
+    expect(onItemChange).toHaveBeenCalledWith('item-1');
+  });
 });
