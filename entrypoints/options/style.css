@@ -1,0 +1,5 @@
+body { font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 16px; }
+section { margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; }
+textarea { width: 100%; box-sizing: border-box; }
+#permission-banner { background: #fff3cd; border: 1px solid #ffe08a; padding: 8px; border-radius: 6px; }

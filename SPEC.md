@@ -91,11 +91,12 @@ YouTube Shorts の視聴時間とスライド（次の動画へ送った）回�
 - このため `alarms` / `notifications` 権限は不要。将来しきい値通知などを追加する場合に改めて検討する。
 
 ### FR-8 投稿テンプレート
-- 設定画面で自由編集可能。以下のプレースホルダを展開する。
+- 設定画面で自由編集可能。以下のプレースホルダを展開する。設定画面のテンプレート編集欄には、この一覧を簡略化した Tips（`<details>`）を併記する。
 
 | プレースホルダ | 内容 |
 |---|---|
-| `{period}` | 「2026-08-30」「2026年8月 第4週」など対象期間 |
+| `{period}` | ポップアップの投稿対象期間セレクタに応じた集計期間ラベル。`day` は「本日 (8/30)」、`week` は「今週 (8/24-8/30)」、`month` は「今月 (2026年8月)」、`total` は「累計」（`total` に日付範囲は付かない） |
+| `{date}` | 「8/30」など当日の日付（月/日、0埋めなし）。選択中の集計期間に関わらず常に当日の日付を指す |
 | `{duration}` | 1時間23分45秒 |
 | `{minutes}` | 83（整数分） |
 | `{slides}` | 412 |
@@ -103,16 +104,32 @@ YouTube Shorts の視聴時間とスライド（次の動画へ送った）回�
 | `{avgPerItem}` | 1本あたりの平均視聴秒数 |
 | `{total_duration}` | 累計視聴時間 |
 | `{breakdown}` | プラットフォーム別内訳（将来用。v0.1 では 1 行のみ） |
+| `{name_line}` | 設定画面の表示名から生成する一人称の一文。表示名が設定されていれば「私、{表示名}は以下の虚無な時間を過ごしてしまいました。」、未設定なら「私は以下の虚無な時間を過ごしてしまいました。」 |
 
 既定テンプレート（X 用）:
 
 ```
-【懺悔】本日のショート視聴
+{name_line}
+【懺悔】{period} のショート視聴
 視聴時間: {duration}
 スライド回数: {slides}回
 累計: {total_duration}
 #ショート懺悔
 ```
+
+既定テンプレート（Discord・プレーンテキスト形式用）:
+
+```
+{name_line}
+【懺悔】{period} のショート視聴
+視聴時間: {duration}
+スライド回数: {slides}回
+視聴本数: {items}本
+累計視聴時間: {total_duration}
+```
+
+Discord の埋め込み形式（既定の投稿形式）では、タイトルを `【懺悔】{period} のショート視聴`、
+description を `{name_line}` の内容とし、X 用テンプレートと見た目を揃える。
 
 ### FR-9 CSV エクスポート
 - 期間指定（全期間 / 直近30日 / 年月指定）でダウンロード。
@@ -124,6 +141,7 @@ YouTube Shorts の視聴時間とスライド（次の動画へ送った）回�
 
 ### FR-10 設定画面（options page）
 - 日付境界オフセット、週の開始曜日
+- 表示名（任意。投稿テンプレートの `{name_line}` に使用）
 - Discord Webhook URL、投稿形式
 - 投稿テンプレート（X 用 / Discord 用を個別に）
 - 計測対象プラットフォームの ON/OFF（v0.1 は YouTube Shorts のみ表示）
@@ -217,6 +235,7 @@ interface PlatformAdapter {
   "settings": {
     "dayBoundaryHour": 0,
     "weekStart": "monday",
+    "displayName": "",
     "discordWebhookUrl": "",
     "discordFormat": "embed",
     "enabledPlatforms": ["youtube_shorts"],
