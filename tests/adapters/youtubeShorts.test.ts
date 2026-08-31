@@ -43,6 +43,18 @@ describe('youtubeShortsAdapter.isPlaying', () => {
   it('returns false when there is no video element', () => {
     expect(youtubeShortsAdapter.isPlaying()).toBe(false);
   });
+
+  it('finds the playing video even when it is not the first video element in the DOM', () => {
+    document.body.innerHTML = '<video></video><video></video><video></video>';
+    const videos = document.querySelectorAll('video');
+    Object.defineProperty(videos[0], 'paused', { value: true, configurable: true });
+    Object.defineProperty(videos[0], 'readyState', { value: 0, configurable: true });
+    Object.defineProperty(videos[1], 'paused', { value: false, configurable: true });
+    Object.defineProperty(videos[1], 'readyState', { value: 4, configurable: true });
+    Object.defineProperty(videos[2], 'paused', { value: true, configurable: true });
+    Object.defineProperty(videos[2], 'readyState', { value: 4, configurable: true });
+    expect(youtubeShortsAdapter.isPlaying()).toBe(true);
+  });
 });
 
 describe('youtubeShortsAdapter.subscribeNavigation', () => {

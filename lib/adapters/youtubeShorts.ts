@@ -23,11 +23,11 @@ export const youtubeShortsAdapter: PlatformAdapter = {
   },
 
   isPlaying() {
-    const video =
-      document.querySelector<HTMLVideoElement>(YOUTUBE_SHORTS_SELECTORS.videoInActiveReel) ??
-      document.querySelector<HTMLVideoElement>(YOUTUBE_SHORTS_SELECTORS.videoFallback);
-    if (!video) return false;
-    return !video.paused && video.readyState >= 2;
+    const videos = document.querySelectorAll<HTMLVideoElement>(YOUTUBE_SHORTS_SELECTORS.video);
+    for (const video of videos) {
+      if (!video.paused && video.readyState >= 2) return true;
+    }
+    return false;
   },
 
   subscribeNavigation(cb) {
