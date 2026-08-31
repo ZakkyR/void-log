@@ -3,7 +3,10 @@
 import { browser } from 'wxt/browser';
 import { StorageClient } from '@/lib/storage';
 import { aggregate } from '@/lib/aggregation';
-import { getPeriodDateKeys, getLast30DateKeys, formatDuration, formatMonthDay, toAggregationDate, type Period } from '@/lib/time';
+import {
+  getPeriodDateKeys, getLast30DateKeys, formatDuration, formatMonthDay,
+  formatDateRangeLabel, formatYearMonthLabel, getWeekRange, toAggregationDate, type Period,
+} from '@/lib/time';
 import { buildTemplateContext, renderTemplate, truncateForX } from '@/lib/template';
 import { buildDiscordPayload } from '@/lib/discord';
 import { buildXIntentUrl } from '@/lib/xIntent';
@@ -68,10 +71,25 @@ async function main() {
   const periodSelect = document.getElementById('period-select') as HTMLSelectElement;
   const statusEl = document.getElementById('status')!;
 
+  function periodLabelWithRange(period: Period): string {
+    switch (period) {
+      case 'day':
+        return `本日 (${formatMonthDay(todayKey)})`;
+      case 'week': {
+        const weekKeys = getWeekRange(todayKey, schema.settings.weekStart);
+        return `今週 (${formatDateRangeLabel(weekKeys[0], weekKeys[weekKeys.length - 1])})`;
+      }
+      case 'month':
+        return `今月 (${formatYearMonthLabel(todayKey)})`;
+      case 'total':
+        return '累計';
+    }
+  }
+
   function currentContext() {
     const period = periodSelect.value as Period;
     return buildTemplateContext(
-      PERIOD_LABELS[period],
+      periodLabelWithRange(period),
       formatMonthDay(todayKey),
       metrics[period],
       metrics.total,

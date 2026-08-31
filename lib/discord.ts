@@ -23,7 +23,7 @@ export function buildDiscordPayload(
   }
   return {
     embeds: [{
-      title: `【懺悔】本日 (${context.date}) のショート視聴`,
+      title: `【懺悔】${context.period} のショート視聴`,
       description: context.name_line,
       fields: [
         { name: '視聴時間', value: context.duration, inline: true },

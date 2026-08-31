@@ -43,6 +43,21 @@
         <h2>投稿テンプレート</h2>
         <label>X 用 <textarea id="template-x" rows="5"></textarea></label>
         <label>Discord 用 <textarea id="template-discord" rows="5"></textarea></label>
+        <details>
+          <summary>使えるプレースホルダ一覧</summary>
+          <ul>
+            <li><code>{name_line}</code> — 表示名から生成される一人称の一文</li>
+            <li><code>{period}</code> — 集計期間（例: 本日 (8/30) / 今週 (8/24-8/30) / 今月 (2026年8月) / 累計）</li>
+            <li><code>{date}</code> — 本日の日付（例: 8/30）</li>
+            <li><code>{duration}</code> — 対象期間の視聴時間</li>
+            <li><code>{minutes}</code> — 対象期間の視聴時間（分・整数）</li>
+            <li><code>{slides}</code> — 対象期間のスライド回数</li>
+            <li><code>{items}</code> — 対象期間のユニーク視聴本数</li>
+            <li><code>{avgPerItem}</code> — 1本あたりの平均視聴秒数</li>
+            <li><code>{total_duration}</code> — 累計視聴時間</li>
+            <li><code>{breakdown}</code> — プラットフォーム別内訳</li>
+          </ul>
+        </details>
       </section>
 
       <section>

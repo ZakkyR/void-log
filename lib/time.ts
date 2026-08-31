@@ -22,6 +22,15 @@ export function formatMonthDay(dateKey: string): string {
   return `${m}/${d}`;
 }
 
+export function formatDateRangeLabel(startDateKey: string, endDateKey: string): string {
+  return `${formatMonthDay(startDateKey)}-${formatMonthDay(endDateKey)}`;
+}
+
+export function formatYearMonthLabel(dateKey: string): string {
+  const [y, m] = dateKey.split('-').map(Number);
+  return `${y}年${m}月`;
+}
+
 function parseDateKey(dateKey: string): Date {
   const [y, m, d] = dateKey.split('-').map(Number);
   return new Date(y, m - 1, d);

@@ -3,7 +3,7 @@ import { buildDiscordPayload } from '@/lib/discord';
 import type { TemplateContext } from '@/lib/template';
 
 const context: TemplateContext = {
-  period: '2026-08-30', date: '8/30', duration: '1時間23分45秒', minutes: 83, slides: 412,
+  period: '本日 (8/30)', date: '8/30', duration: '1時間23分45秒', minutes: 83, slides: 412,
   items: 268, avgPerItem: 18, total_duration: '10時間0分0秒', breakdown: 'YouTube Shorts',
   name_line: '私は以下の虚無な時間を過ごしてしまいました。',
 };

@@ -3,6 +3,8 @@ import {
   toAggregationDate,
   formatDuration,
   formatMonthDay,
+  formatDateRangeLabel,
+  formatYearMonthLabel,
   getWeekRange,
   getMonthRange,
   getPeriodDateKeys,
@@ -14,6 +16,18 @@ describe('formatMonthDay', () => {
   it('formats a date key as M/D without zero padding', () => {
     expect(formatMonthDay('2026-08-30')).toBe('8/30');
     expect(formatMonthDay('2026-01-05')).toBe('1/5');
+  });
+});
+
+describe('formatDateRangeLabel', () => {
+  it('formats a start and end date key as M/D-M/D', () => {
+    expect(formatDateRangeLabel('2026-08-24', '2026-08-30')).toBe('8/24-8/30');
+  });
+});
+
+describe('formatYearMonthLabel', () => {
+  it('formats a date key as YYYY年M月', () => {
+    expect(formatYearMonthLabel('2026-08-30')).toBe('2026年8月');
   });
 });
 
