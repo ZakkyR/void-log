@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>虚無ログ</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main id="app">
+      <h1>虚無ログ</h1>
+      <section id="cards" class="cards"></section>
+      <section id="chart" class="chart"></section>
+      <section class="controls">
+        <label>
+          投稿対象期間
+          <select id="period-select">
+            <option value="day">今日</option>
+            <option value="week">今週</option>
+            <option value="month">今月</option>
+            <option value="total">累計</option>
+          </select>
+        </label>
+      </section>
+      <section class="actions">
+        <button id="post-x">懺悔する（X）</button>
+        <button id="post-discord">懺悔する（Discord）</button>
+        <button id="export-csv">CSV エクスポート</button>
+        <button id="open-options">設定</button>
+      </section>
+      <p id="status" role="status"></p>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
