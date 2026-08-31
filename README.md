@@ -57,9 +57,10 @@ pnpm typecheck       # tsc --noEmit
 
 ### Chrome
 
-1. `pnpm build` を実行
+1. [Releases](https://github.com/ZakkyR/void-log/releases) から最新の `void-log-<version>-chrome.zip` をダウンロードして解凍
+   （自分でビルドする場合は `pnpm build` を実行し `.output/chrome-mv3/` を使う）
 2. `chrome://extensions` を開き、「デベロッパーモード」を有効化
-3. 「パッケージ化されていない拡張機能を読み込む」から `.output/chrome-mv3/` を選択
+3. 「パッケージ化されていない拡張機能を読み込む」から解凍したフォルダ（または `.output/chrome-mv3/`）を選択
 
 ### Firefox
 
