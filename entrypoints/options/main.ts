@@ -103,9 +103,16 @@ function bindExportImport() {
     const file = input.files?.[0];
     if (!file) return;
     const text = await file.text();
-    const schema = parseJsonBackup(text);
-    await storage.replaceAll(schema);
-    await loadForm();
+    try {
+      const schema = parseJsonBackup(text);
+      await storage.replaceAll(schema);
+      await loadForm();
+      document.getElementById('save-status')!.textContent = 'バックアップを取り込みました';
+    } catch {
+      document.getElementById('save-status')!.textContent = '取り込みに失敗しました（ファイル形式を確認してください）';
+    } finally {
+      input.value = '';
+    }
   });
 }
 
