@@ -14,7 +14,14 @@ export default defineConfig({
     browser_specific_settings: {
       gecko: {
         id: 'void-log@zakkyr.dev',
-        strict_min_version: '115.0',
+        strict_min_version: '140.0',
+        // @ts-expect-error: data_collection_permissions is a newer AMO manifest key not yet in wxt's bundled types
+        data_collection_permissions: {
+          required: ['none'],
+        },
+      },
+      gecko_android: {
+        strict_min_version: '142.0',
       },
     },
   },

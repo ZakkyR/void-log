@@ -10,6 +10,9 @@
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
+    "zip:firefox:sources": "wxt zip -b firefox --sources",
+    "submit:init": "wxt submit init",
+    "submit:firefox": "wxt submit --firefox-channel unlisted",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"

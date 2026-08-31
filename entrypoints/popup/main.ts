@@ -29,11 +29,17 @@ function renderCards(metrics: Record<Period, AggregatedMetrics>) {
   (Object.keys(PERIOD_LABELS) as Period[]).forEach((period) => {
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `
-      <h2>${PERIOD_LABELS[period]}</h2>
-      <p>${formatDuration(metrics[period].seconds)}</p>
-      <p>${metrics[period].slides}回スライド</p>
-    `;
+
+    const heading = document.createElement('h2');
+    heading.textContent = PERIOD_LABELS[period];
+
+    const duration = document.createElement('p');
+    duration.textContent = formatDuration(metrics[period].seconds);
+
+    const slides = document.createElement('p');
+    slides.textContent = `${metrics[period].slides}回スライド`;
+
+    card.append(heading, duration, slides);
     container.appendChild(card);
   });
 }

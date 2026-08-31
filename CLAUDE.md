@@ -11,7 +11,7 @@ YouTube Shorts（将来 TikTok / X おすすめタブ）の視聴時間とスラ
 可視化と「懺悔ログ」としての手動 SNS 投稿（X intent URL / Discord Webhook）が主目的。
 
 - 個人利用が前提（ストア公開はしない想定だが、公開可能な品質は維持する）
-- Chrome（最新安定版）と Firefox（115+）を Manifest V3 単一ソースで両対応
+- Chrome（最新安定版）と Firefox（140+）を Manifest V3 単一ソースで両対応
 
 ## 2. 技術スタック
 

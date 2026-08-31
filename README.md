@@ -2,7 +2,7 @@
 
 YouTube Shorts の視聴時間とスライド（次の動画へ送った）回数を自動計測し、日 / 週 / 月 / 累計で可視化するブラウザ拡張です。
 
-- Chrome（最新安定版）と Firefox（115+）を Manifest V3 単一ソースで両対応
+- Chrome（最新安定版）と Firefox（140+）を Manifest V3 単一ソースで両対応
 - 詳細な仕様は [SPEC.md](./SPEC.md) を参照してください
 
 ## 主な機能

@@ -21,7 +21,7 @@ YouTube Shorts の視聴時間とスライド（次の動画へ送った）回�
 
 | 項目 | 内容 |
 |---|---|
-| ブラウザ | Google Chrome（最新安定版）、Mozilla Firefox（最低 115） |
+| ブラウザ | Google Chrome（最新安定版）、Mozilla Firefox（最低 140） |
 | Manifest | Manifest V3（単一ソースから両ブラウザ向けにビルド） |
 | 計測対象（v0.1） | `https://www.youtube.com/shorts/*` |
 | 計測対象（将来） | TikTok（`https://www.tiktok.com/*` のフィード）、X のおすすめタブ（`https://x.com/home` の For You） |
@@ -220,7 +220,12 @@ interface PlatformAdapter {
   "action": { "default_popup": "popup.html" },
   "options_ui": { "page": "options.html", "open_in_tab": true },
   "browser_specific_settings": {
-    "gecko": { "id": "void-log@zakkyr.dev", "strict_min_version": "115.0" }
+    "gecko": {
+      "id": "void-log@zakkyr.dev",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": { "required": ["none"] }
+    },
+    "gecko_android": { "strict_min_version": "142.0" }
   }
 }
 ```

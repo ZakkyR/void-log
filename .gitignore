@@ -2,4 +2,6 @@ node_modules
 .wxt
 .output
 .env
+.env.submit
+.env.submit.backup-*
 *.local
