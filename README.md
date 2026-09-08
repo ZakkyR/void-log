@@ -2,6 +2,8 @@
 
 YouTube Shorts の視聴時間とスライド（次の動画へ送った）回数を自動計測し、日 / 週 / 月 / 累計で可視化するブラウザ拡張です。
 
+<img src="docs/screenshots/addon.png" alt="ポップアップのスクリーンショット" width="360" />
+
 - Chrome（最新安定版）と Firefox（140+）を Manifest V3 単一ソースで両対応
 - 詳細な仕様は [SPEC.md](./SPEC.md) を参照してください
 
@@ -11,6 +13,9 @@ YouTube Shorts の視聴時間とスライド（次の動画へ送った）回�
 - ポップアップで 今日 / 今週 / 今月 / 累計 のサマリーと直近30日のバーチャートを表示
 - 「懺悔する」ボタンから X（intent URL）/ Discord（Webhook）へ手動投稿
   - 投稿本文はプレースホルダ付きテンプレートで自由にカスタマイズ可能
+
+  <img src="docs/screenshots/x.png" alt="X投稿例のスクリーンショット" width="480" />
+
 - CSV エクスポート（Excel 向け UTF-8 BOM 付き）、JSON フルバックアップの出力・取り込み
 
 ## 技術スタック
