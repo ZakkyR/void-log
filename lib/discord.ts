@@ -13,18 +13,24 @@ export interface DiscordContentPayload {
   content: string;
 }
 
+export interface DiscordTemplates {
+  content: string;
+  embedTitle: string;
+  embedDescription: string;
+}
+
 export function buildDiscordPayload(
   format: 'embed' | 'content',
   context: TemplateContext,
-  template: string,
+  templates: DiscordTemplates,
 ): DiscordEmbedPayload | DiscordContentPayload {
   if (format === 'content') {
-    return { content: renderTemplate(template, context) };
+    return { content: renderTemplate(templates.content, context) };
   }
   return {
     embeds: [{
-      title: `【懺悔】${context.period} のショート視聴`,
-      description: context.name_line,
+      title: renderTemplate(templates.embedTitle, context),
+      description: renderTemplate(templates.embedDescription, context),
       fields: [
         { name: '視聴時間', value: context.duration, inline: true },
         { name: 'スライド回数', value: `${context.slides}回`, inline: true },

@@ -36,6 +36,8 @@ async function loadForm() {
 
   (document.getElementById('template-x') as HTMLTextAreaElement).value = schema.settings.templates.x;
   (document.getElementById('template-discord') as HTMLTextAreaElement).value = schema.settings.templates.discord;
+  (document.getElementById('template-discord-embed-title') as HTMLInputElement).value = schema.settings.templates.discordEmbedTitle;
+  (document.getElementById('template-discord-embed-description') as HTMLTextAreaElement).value = schema.settings.templates.discordEmbedDescription;
 
   if (!(await hasRequiredHostPermissions())) {
     document.getElementById('permission-banner')!.hidden = false;
@@ -51,10 +53,17 @@ function bindSave() {
     const discordWebhookUrl = (document.getElementById('discord-webhook-url') as HTMLInputElement).value;
     const templateX = (document.getElementById('template-x') as HTMLTextAreaElement).value;
     const templateDiscord = (document.getElementById('template-discord') as HTMLTextAreaElement).value;
+    const templateDiscordEmbedTitle = (document.getElementById('template-discord-embed-title') as HTMLInputElement).value;
+    const templateDiscordEmbedDescription = (document.getElementById('template-discord-embed-description') as HTMLTextAreaElement).value;
 
     await storage.updateSettings({
       dayBoundaryHour, weekStart, displayName, discordFormat, discordWebhookUrl,
-      templates: { x: templateX, discord: templateDiscord },
+      templates: {
+        x: templateX,
+        discord: templateDiscord,
+        discordEmbedTitle: templateDiscordEmbedTitle,
+        discordEmbedDescription: templateDiscordEmbedDescription,
+      },
     });
 
     document.getElementById('save-status')!.textContent = '保存しました';

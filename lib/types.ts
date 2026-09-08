@@ -15,7 +15,12 @@ export interface Settings {
   discordWebhookUrl: string;
   discordFormat: 'embed' | 'content';
   enabledPlatforms: PlatformId[];
-  templates: { x: string; discord: string };
+  templates: {
+    x: string;
+    discord: string;
+    discordEmbedTitle: string;
+    discordEmbedDescription: string;
+  };
 }
 
 export interface RuntimeState {

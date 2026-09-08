@@ -128,8 +128,21 @@ YouTube Shorts の視聴時間とスライド（次の動画へ送った）回�
 累計視聴時間: {total_duration}
 ```
 
-Discord の埋め込み形式（既定の投稿形式）では、タイトルを `【懺悔】{period} のショート視聴`、
-description を `{name_line}` の内容とし、X 用テンプレートと見た目を揃える。
+既定テンプレート（Discord・埋め込み形式・タイトル）:
+
+```
+【懺悔】{period} のショート視聴
+```
+
+既定テンプレート（Discord・埋め込み形式・description）:
+
+```
+{name_line}
+```
+
+Discord の埋め込み形式（既定の投稿形式）は、タイトル・description をそれぞれ個別のテンプレート欄（上記）から
+プレースホルダ展開して生成する。fields（視聴時間・スライド回数・視聴本数・累計視聴時間）は固定のラベル・レイアウトで、
+テンプレート化の対象外。
 
 ### FR-9 CSV エクスポート
 - 期間指定（全期間 / 直近30日 / 年月指定）でダウンロード。
@@ -143,7 +156,7 @@ description を `{name_line}` の内容とし、X 用テンプレートと見た
 - 日付境界オフセット、週の開始曜日
 - 表示名（任意。投稿テンプレートの `{name_line}` に使用）
 - Discord Webhook URL、投稿形式
-- 投稿テンプレート（X 用 / Discord 用を個別に）
+- 投稿テンプレート（X 用 / Discord プレーンテキスト用 / Discord 埋め込み用のタイトル・description を個別に）
 - 計測対象プラットフォームの ON/OFF（v0.1 は YouTube Shorts のみ表示）
 - 全データ削除（確認ダイアログ付き）
 
@@ -244,7 +257,12 @@ interface PlatformAdapter {
     "discordWebhookUrl": "",
     "discordFormat": "embed",
     "enabledPlatforms": ["youtube_shorts"],
-    "templates": { "x": "...", "discord": "..." }
+    "templates": {
+      "x": "...",
+      "discord": "...",
+      "discordEmbedTitle": "...",
+      "discordEmbedDescription": "..."
+    }
   },
   "daily": {
     // 日付 → プラットフォーム → 指標

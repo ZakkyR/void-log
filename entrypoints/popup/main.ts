@@ -119,7 +119,11 @@ async function main() {
     const payload = buildDiscordPayload(
       schema.settings.discordFormat,
       currentContext(),
-      schema.settings.templates.discord,
+      {
+        content: schema.settings.templates.discord,
+        embedTitle: schema.settings.templates.discordEmbedTitle,
+        embedDescription: schema.settings.templates.discordEmbedDescription,
+      },
     );
     const response = await browser.runtime.sendMessage<SendDiscordMessage, SendDiscordResponse>({
       type: 'voidlog:sendDiscord',

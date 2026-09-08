@@ -65,6 +65,24 @@ describe('StorageClient', () => {
     expect(schema.settings.weekStart).toBe(DEFAULT_SETTINGS.weekStart);
   });
 
+  it('fills in missing template keys for settings stored before they existed', async () => {
+    const area = createFakeArea();
+    await area.set({
+      settings: {
+        dayBoundaryHour: 2,
+        templates: { x: 'カスタムX', discord: 'カスタムDiscord' },
+      },
+    });
+    const legacyClient = new StorageClient(area);
+
+    const schema = await legacyClient.read();
+    expect(schema.settings.dayBoundaryHour).toBe(2);
+    expect(schema.settings.templates.x).toBe('カスタムX');
+    expect(schema.settings.templates.discord).toBe('カスタムDiscord');
+    expect(schema.settings.templates.discordEmbedTitle).toBe(DEFAULT_SETTINGS.templates.discordEmbedTitle);
+    expect(schema.settings.templates.discordEmbedDescription).toBe(DEFAULT_SETTINGS.templates.discordEmbedDescription);
+  });
+
   it('clears all stored data', async () => {
     await client.addMeasurement({
       platform: 'youtube_shorts', dateKey: '2026-08-30', deltaSeconds: 1, deltaSlides: 0, itemHashes: [],

@@ -18,6 +18,8 @@ export const DEFAULT_SETTINGS: Settings = {
   templates: {
     x: '{name_line}\n【懺悔】{period} のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n累計: {total_duration}\n#ショート懺悔',
     discord: '{name_line}\n【懺悔】{period} のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n視聴本数: {items}本\n累計視聴時間: {total_duration}',
+    discordEmbedTitle: '【懺悔】{period} のショート視聴',
+    discordEmbedDescription: '{name_line}',
   },
 };
 
@@ -32,9 +34,14 @@ export class StorageClient {
 
   async read(): Promise<StorageSchema> {
     const raw = await this.area.get(['schemaVersion', 'settings', 'daily', 'runtime']);
+    const rawSettings = raw.settings as Partial<Settings> | undefined;
     return {
       schemaVersion: (raw.schemaVersion as number) ?? CURRENT_SCHEMA_VERSION,
-      settings: { ...DEFAULT_SETTINGS, ...(raw.settings as Partial<Settings> | undefined) },
+      settings: {
+        ...DEFAULT_SETTINGS,
+        ...rawSettings,
+        templates: { ...DEFAULT_SETTINGS.templates, ...rawSettings?.templates },
+      },
       daily: (raw.daily as Record<string, DailyRecord>) ?? {},
       runtime: (raw.runtime as RuntimeState) ?? defaultRuntime(),
     };
