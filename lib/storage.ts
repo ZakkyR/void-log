@@ -16,10 +16,10 @@ export const DEFAULT_SETTINGS: Settings = {
   discordFormat: 'embed',
   enabledPlatforms: ['youtube_shorts'],
   templates: {
-    x: '{name_line}\n【懺悔】{period} のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n累計: {total_duration}\n#ショート懺悔',
-    discord: '{name_line}\n【懺悔】{period} のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n視聴本数: {items}本\n累計視聴時間: {total_duration}',
+    x: '{name_line}は以下の虚無な時間を過ごしてしまいました。\n【懺悔】{period} のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n累計: {total_duration}\n#ショート懺悔',
+    discord: '{name_line}は以下の虚無な時間を過ごしてしまいました。\n【懺悔】{period} のショート視聴\n視聴時間: {duration}\nスライド回数: {slides}回\n視聴本数: {items}本\n累計視聴時間: {total_duration}',
     discordEmbedTitle: '【懺悔】{period} のショート視聴',
-    discordEmbedDescription: '{name_line}',
+    discordEmbedDescription: '{name_line}は以下の虚無な時間を過ごしてしまいました。',
   },
 };
 

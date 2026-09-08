@@ -1,7 +1,7 @@
 /// <reference path="../../.wxt/wxt.d.ts" />
 
 import { browser } from 'wxt/browser';
-import { StorageClient } from '@/lib/storage';
+import { StorageClient, DEFAULT_SETTINGS } from '@/lib/storage';
 import { buildCsv, dailyToCsvRows, buildJsonBackup, parseJsonBackup } from '@/lib/csv';
 import { getPeriodDateKeys, getLast30DateKeys, getMonthRange, toAggregationDate } from '@/lib/time';
 import { hasRequiredHostPermissions, requestRequiredHostPermissions } from '@/lib/permissions';
@@ -67,6 +67,16 @@ function bindSave() {
     });
 
     document.getElementById('save-status')!.textContent = '保存しました';
+  });
+}
+
+function bindResetTemplates() {
+  document.getElementById('reset-templates')!.addEventListener('click', () => {
+    (document.getElementById('template-x') as HTMLTextAreaElement).value = DEFAULT_SETTINGS.templates.x;
+    (document.getElementById('template-discord') as HTMLTextAreaElement).value = DEFAULT_SETTINGS.templates.discord;
+    (document.getElementById('template-discord-embed-title') as HTMLInputElement).value = DEFAULT_SETTINGS.templates.discordEmbedTitle;
+    (document.getElementById('template-discord-embed-description') as HTMLTextAreaElement).value = DEFAULT_SETTINGS.templates.discordEmbedDescription;
+    document.getElementById('save-status')!.textContent = 'デフォルトに戻しました（保存ボタンを押すまで反映されません）';
   });
 }
 
@@ -139,6 +149,7 @@ function bindDeleteAll() {
 async function main() {
   await loadForm();
   bindSave();
+  bindResetTemplates();
   bindPermissionBanner();
   bindExportImport();
   bindDeleteAll();

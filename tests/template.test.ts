@@ -18,12 +18,12 @@ describe('buildTemplateContext', () => {
 
   it('uses the anonymous name_line when displayName is empty', () => {
     const context = buildTemplateContext('2026-08-30', '8/30', periodMetrics, totalMetrics, formatDuration, '');
-    expect(context.name_line).toBe('私は以下の虚無な時間を過ごしてしまいました。');
+    expect(context.name_line).toBe('私');
   });
 
   it('includes displayName in name_line when set', () => {
     const context = buildTemplateContext('2026-08-30', '8/30', periodMetrics, totalMetrics, formatDuration, 'ざっきー');
-    expect(context.name_line).toBe('私、ざっきーは以下の虚無な時間を過ごしてしまいました。');
+    expect(context.name_line).toBe('私、ざっきー');
   });
 });
 

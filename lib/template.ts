@@ -22,9 +22,7 @@ export function buildTemplateContext(
   displayName: string,
 ): TemplateContext {
   const avgPerItem = periodMetrics.items > 0 ? Math.round(periodMetrics.seconds / periodMetrics.items) : 0;
-  const nameLine = displayName
-    ? `私、${displayName}は以下の虚無な時間を過ごしてしまいました。`
-    : '私は以下の虚無な時間を過ごしてしまいました。';
+  const nameLine = displayName ? `私、${displayName}` : '私';
   return {
     period: periodLabel,
     date: dateLabel,

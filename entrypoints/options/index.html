@@ -45,10 +45,11 @@
         <label>Discord 用（プレーンテキスト形式） <textarea id="template-discord" rows="5"></textarea></label>
         <label>Discord 用（埋め込み形式・タイトル） <input type="text" id="template-discord-embed-title" /></label>
         <label>Discord 用（埋め込み形式・description） <textarea id="template-discord-embed-description" rows="3"></textarea></label>
+        <button id="reset-templates" type="button">デフォルトに戻す</button>
         <details>
           <summary>使えるプレースホルダ一覧</summary>
           <ul>
-            <li><code>{name_line}</code> — 表示名から生成される一人称の一文</li>
+            <li><code>{name_line}</code> — 表示名から生成される一人称の主語（例: 「私」「私、ざっきー」）</li>
             <li><code>{period}</code> — 集計期間（例: 本日 (8/30) / 今週 (8/24-8/30) / 今月 (2026年8月) / 累計）</li>
             <li><code>{date}</code> — 本日の日付（例: 8/30）</li>
             <li><code>{duration}</code> — 対象期間の視聴時間</li>
